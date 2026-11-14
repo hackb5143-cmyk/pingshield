@@ -2,6 +2,9 @@
 
 - **Project**: PingShield Hackathon MVP (Next.js App Router, TypeScript, Tailwind, Supabase)
 - **Status**: ALL PHASES COMPLETED & END-TO-END VERIFIED
+- **GitHub Repository**: [hackb5143-cmyk/pingshield](https://github.com/hackb5143-cmyk/pingshield)
+- **Primary Branch**: `main`
+- **Initial Commit Hash**: `30c635d`
 - **Empirical Proof Captured**:
   - Verification Screenshot: `C:/Users/hp/.gemini/antigravity/brain/726848ab-141b-4e3c-b0b6-f1f6ccb03bba/browser_evidence/435dddfb-4790-442f-92ec-43ad5f14af99/final_step_18.png`
   - Routes Tested:
