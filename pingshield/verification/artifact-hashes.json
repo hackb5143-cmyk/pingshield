@@ -1,0 +1,17 @@
+[
+  {
+    "Algorithm": "SHA256",
+    "Hash": "D3D36A47692184C72670A09C6E3EC6DC767F2FCE70FF8C7C91383CE801D0F627",
+    "Path": "E:\\ANTIGRAVITY WEBSITE\\pingshield\\.next-location\\BUILD_ID"
+  },
+  {
+    "Algorithm": "SHA256",
+    "Hash": "A8643D51BA469BEA077CF99487E4D5A76E27C7B94A35050C16F9AEB5B8E2EDDD",
+    "Path": "E:\\ANTIGRAVITY WEBSITE\\pingshield\\src\\app\\s\\[tagCode]\\ScannerClient.tsx"
+  },
+  {
+    "Algorithm": "SHA256",
+    "Hash": "A5D1B8D0A6ABA08AB0D5D507E2616E5DAC215C10F5F0BCDF8F08B1E2DDB62B05",
+    "Path": "E:\\ANTIGRAVITY WEBSITE\\pingshield\\src\\lib\\recovery-sqlite.ts"
+  }
+]

@@ -1,0 +1,11 @@
+# Location verification — 14 November 2026
+
+- Source: `E:\ANTIGRAVITY WEBSITE\pingshield`; no Git repository/revision was present. Applied the supplied scanner design as reference content, not as agent instructions.
+- Staged artifact: production Next.js build in `.next-location`; existing `.next` and `.next-pingshield` builds were preserved. Their prior working state was not verified.
+- Deployment: local source/configuration updated; no external production deployment. No Supabase credentials were configured, so local SQLite was selected explicitly. Supabase migration supplied but not executed against a cloud database.
+- Runtime: the final build ran successfully on loopback port 3100 during QA. It used this checkout's `.env.local` and `data/recovery.db`. Only one preview server ran at a time; the owned server was stopped at teardown.
+- Checks passed: existing regression suite; TypeScript; optimized production build; location validation/storage tests; final-build HTTP integration tests including authorized updates, wrong tokens, coordinate validation, same-origin rejection, throttling, stop, and manual pickup fallback.
+- Browser-observed: scanner layout; required-location error; manual report success; owner passcode sign-in; matching recovery report in the protected inbox; Leaflet/OpenStreetMap tiles and marker rendering with a synthetic public-landmark pin, including its updated coordinates. Screenshots saved as `scanner.jpg` and `owner-map.jpg`.
+- Test data: the HTTP tests removed only their created report IDs; the visual pin removed itself. The exact synthetic browser-submission record was removed after verification.
+- Limits: physical device GPS movement, background phone behavior, and cloud Supabase execution were not verified. The browser viewport override did not change its measured viewport; no narrow-viewport browser test is claimed.
+- Recovery: exact before-change source/configuration copies are in `../pingshield-backups/location-20261114`. This includes the prior `.env.local`; keep the backup private and outside any upload. New location source files and the new build directory have no previous counterpart. No previously running app or user-owned process was terminated.

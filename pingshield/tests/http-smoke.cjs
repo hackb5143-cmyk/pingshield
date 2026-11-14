@@ -1,0 +1,35 @@
+const assert = require('node:assert/strict');
+const Database = require('better-sqlite3');
+const base = process.env.TEST_URL || 'http://localhost:3100';
+async function main() {
+  for (const route of ['/', '/emergency', '/auth/login', '/dashboard/contacts/accept?token=invalid']) assert.equal((await fetch(base + route)).status, 200, route);
+  assert.equal((await fetch(base + '/api/account')).status, 401);
+  assert.equal((await fetch(base + '/api/admin/reports')).status, 403);
+  assert.equal((await fetch(base + '/api/scan/invalid')).status, 404);
+  const db = new Database('data/qa-smoke.db');
+  const tag = db.prepare('SELECT token FROM tags LIMIT 1').get();
+  const scan = await fetch(base + '/api/scan/' + tag.token);
+  assert.equal(scan.status, 200);
+  const cookie = scan.headers.getSetCookie().map(value => value.split(';')[0]).join('; ');
+  assert.ok(cookie.includes('ps_finder='));
+  const publicData = await scan.json();
+  assert.ok(!JSON.stringify(publicData).includes('+91'));
+  const headers = { 'Content-Type': 'application/json', Cookie: cookie };
+  const post = (route, body) => fetch(base + route, { method: 'POST', headers, body: JSON.stringify(body) });
+  const prefix = '/api/scan/' + tag.token;
+  assert.equal((await post(prefix + '/call', { callType: 'family', sessionId: 'forged' })).status, 403);
+  assert.equal((await post('/api/webhooks/telephony', { providerCallId: 'fake', status: 'no-answer' })).status, 403);
+  assert.equal((await post(prefix + '/location', { source: 'browser', latitude: 'bad', longitude: 0 })).status, 400);
+  assert.equal((await post(prefix + '/location', { source: 'browser', latitude: 0, longitude: 0, accuracy: 0 })).status, 200);
+  assert.equal((await post(prefix + '/location', { source: 'manually provided', landmark: 'Library entrance' })).status, 200);
+  const message = await post(prefix + '/message', { content: 'Found your item', sessionId: 'forged' });
+  assert.equal(message.status, 201);
+  const conversation = await (await fetch(base + prefix + '/message', { headers })).json();
+  assert.equal(conversation.messages.length, 1);
+  assert.equal((await (await fetch(base + prefix + '/message')).json()).messages.length, 0);
+  assert.equal(db.prepare("SELECT landmark FROM scan_events WHERE landmark IS NOT NULL").get().landmark, 'Library entrance');
+  assert.equal((await post('/api/contacts/withdraw', { id: 'arbitrary-id' })).status, 400);
+  db.close();
+  console.log('PASS: public pages, protected endpoints, invalid tags, cookie identity, family lock, forged callbacks, locations, private conversations, consent protection');
+}
+main().catch(error => { console.error(error); process.exitCode = 1; });

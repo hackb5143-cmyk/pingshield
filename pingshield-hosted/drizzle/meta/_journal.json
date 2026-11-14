@@ -1,0 +1,27 @@
+{
+  "version": "7",
+  "dialect": "sqlite",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "6",
+      "when": 1794617585922,
+      "tag": "0000_deep_eddie_brock",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1794618792108,
+      "tag": "0001_polite_betty_ross",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1794620005890,
+      "tag": "0002_glossy_risque",
+      "breakpoints": true
+    }
+  ]
+}

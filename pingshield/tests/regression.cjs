@@ -1,0 +1,54 @@
+const fs = require('node:fs');
+const os = require('node:os');
+const path = require('node:path');
+const assert = require('node:assert/strict');
+const ts = require('typescript');
+const temporary = fs.mkdtempSync(path.join(os.tmpdir(), 'pingshield-test-'));
+process.env.DATABASE_PATH = path.join(temporary, 'test.db');
+require.extensions['.ts'] = (module, filename) => {
+  const source = fs.readFileSync(filename, 'utf8');
+  module._compile(ts.transpileModule(source, { compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022, esModuleInterop: true } }).outputText, filename);
+};
+const db = require('../src/lib/db/index.ts');
+const provider = require('../src/lib/telephony/provider.ts');
+const { processDemoCallbacks } = require('../src/lib/telephony/process.ts');
+(async () => {
+  db.runMigrations(); db.runMigrations();
+  const owner = db.createUser('test@example.com', 'strongPassword', 'Test');
+  db.updateUser(owner.id, { name: 'Updated', language: 'hi' });
+  assert.equal(db.getUserById(owner.id).name, 'Updated');
+  const item = db.createItem(owner.id, { name: 'Bag', category: 'bag' });
+  const tag = db.createTag(item.id);
+  const incident = db.createIncident({ itemId: item.id, tagId: tag.id, sessionId: 'test-session' });
+  for (let i = 0; i < 3; i++) db.incrementRateLimit(owner.id, 'scan_notification');
+  assert.equal(db.checkRateLimit(owner.id, 'scan_notification', 3, 5), false);
+  db.getDb().prepare("UPDATE rate_limits SET window_start = datetime('now', '-6 minutes')").run();
+  assert.equal(db.checkRateLimit(owner.id, 'scan_notification', 3, 5), true);
+  db.createScanEvent({ tagId: tag.id, itemId: item.id, sessionId: 'test', latitude: 0, longitude: 0, accuracy: 0 });
+  assert.equal(db.getScanEventsByItem(item.id)[0].latitude, 0);
+  for (const status of ['busy', 'failed', 'cancelled', 'completed', 'no-answer', 'no-answer']) {
+    const call = await provider.initiateCall('private-owner', 'private-finder', '', 30);
+    db.createCallAttempt({ incidentId: incident.id, callType: 'owner', providerCallId: call.providerCallId });
+    provider.forceCallOutcome(call.providerCallId, status);
+    processDemoCallbacks(); processDemoCallbacks();
+    const current = db.getIncidentById(incident.id);
+    if (status !== 'no-answer') assert.equal(current.owner_call_attempts, 0);
+  }
+  assert.equal(db.getIncidentById(incident.id).owner_call_attempts, 2);
+  assert.equal(db.getIncidentById(incident.id).family_contact_unlocked, 1);
+  const expired = db.createIncident({ itemId: item.id, tagId: tag.id, sessionId: 'expired' });
+  db.getDb().prepare("UPDATE incidents SET expires_at = datetime('now', '-1 hour') WHERE id = ?").run(expired.id);
+  const late = await provider.initiateCall('owner', 'finder', '', 30);
+  db.createCallAttempt({ incidentId: expired.id, callType: 'owner', providerCallId: late.providerCallId });
+  provider.forceCallOutcome(late.providerCallId, 'no-answer'); processDemoCallbacks();
+  assert.equal(db.getIncidentById(expired.id).owner_call_attempts, 0);
+  db.createMessage({ itemId: item.id, incidentId: incident.id, direction: 'finder_to_owner', senderType: 'finder', content: 'Found it' });
+  db.createNotification({ userId: owner.id, itemId: item.id, incidentId: incident.id, type: 'message', title: 'Report' });
+  db.createBlock(owner.id, { sessionId: 'test-session' });
+  assert.equal(db.isBlocked(owner.id, 'test-session'), true);
+  db.deleteUser(owner.id);
+  assert.equal(db.getUserById(owner.id), undefined);
+  assert.equal(db.getTagByToken(tag.token), undefined);
+  assert.equal(db.getDb().prepare('SELECT count(*) AS n FROM call_attempts').get().n, 0);
+  console.log('PASS: migrations, settings, rolling limits, zero coordinates, terminal outcomes, duplicate callbacks, expiry, blocking, account deletion');
+})().catch(error => { console.error(error); process.exitCode = 1; }).finally(() => { db.getDb().close(); fs.rmSync(temporary, { recursive: true, force: true }); });

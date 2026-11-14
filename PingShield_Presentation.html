@@ -1,0 +1,965 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PingShield — Pitch Deck | Peaky Blinders (PEC Chandigarh)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-dark: #0a0f1d;
+      --card-bg: #141b2d;
+      --card-inner: #1c263e;
+      --card-border: #28344b;
+      --cyan: #06b6d4;
+      --green: #10b981;
+      --amber: #f59e0b;
+      --red: #ef4444;
+      --purple: #a855f7;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: #030712;
+      color: var(--text-main);
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow-x: hidden;
+    }
+
+    /* Presentation Canvas (16:9) */
+    .deck-container {
+      width: 100vw;
+      height: 100vh;
+      max-width: 1333px;
+      max-height: 750px;
+      background: radial-gradient(circle at 15% 20%, rgba(6, 182, 212, 0.08) 0%, transparent 40%),
+                  radial-gradient(circle at 85% 80%, rgba(16, 185, 129, 0.06) 0%, transparent 45%),
+                  var(--bg-dark);
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      border-radius: 16px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.8), 0 0 40px rgba(6, 182, 212, 0.1);
+      overflow: hidden;
+    }
+
+    /* Slide Item */
+    .slide {
+      display: none;
+      flex-direction: column;
+      width: 100%;
+      height: 100%;
+      padding: 40px 54px;
+      opacity: 0;
+      transition: opacity 0.35s ease, transform 0.35s ease;
+      transform: scale(0.985);
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+    }
+
+    .slide.active {
+      display: flex;
+      opacity: 1;
+      transform: scale(1);
+      z-index: 2;
+    }
+
+    /* Top Bar */
+    .slide-topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 24px;
+    }
+
+    .kicker {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--cyan);
+      margin-bottom: 6px;
+    }
+
+    .slide-title {
+      font-size: 26px;
+      font-weight: 800;
+      color: var(--text-main);
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+    }
+
+    .slide-counter {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-dim);
+      background: rgba(255, 255, 255, 0.04);
+      padding: 6px 14px;
+      border-radius: 9999px;
+      border: 1px solid var(--card-border);
+    }
+
+    /* Badges & Pills */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 12px;
+      border-radius: 9999px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    .badge-cyan { background: rgba(6, 182, 212, 0.15); color: var(--cyan); border: 1px solid rgba(6, 182, 212, 0.3); }
+    .badge-green { background: rgba(16, 185, 129, 0.15); color: var(--green); border: 1px solid rgba(16, 185, 129, 0.3); }
+    .badge-amber { background: rgba(245, 158, 11, 0.15); color: var(--amber); border: 1px solid rgba(245, 158, 11, 0.3); }
+    .badge-red { background: rgba(239, 68, 68, 0.15); color: var(--red); border: 1px solid rgba(239, 68, 68, 0.3); }
+    .badge-purple { background: rgba(168, 85, 247, 0.15); color: var(--purple); border: 1px solid rgba(168, 85, 247, 0.3); }
+
+    /* Cards */
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      padding: 22px;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    .card-nested {
+      background: var(--card-inner);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 14px;
+    }
+
+    /* Grids */
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      height: 100%;
+    }
+
+    .grid-2x2 {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      grid-template-rows: repeat(2, 1fr);
+      gap: 18px;
+      height: 100%;
+    }
+
+    .grid-4 {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      height: 100%;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      height: 100%;
+    }
+
+    /* Typography inside cards */
+    .card-title {
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--text-main);
+      margin: 10px 0 8px 0;
+      line-height: 1.3;
+    }
+
+    .card-desc {
+      font-size: 13px;
+      line-height: 1.6;
+      color: var(--text-muted);
+    }
+
+    ul.bullet-list {
+      list-style: none;
+      padding-left: 0;
+      margin-top: 8px;
+    }
+
+    ul.bullet-list li {
+      font-size: 12.5px;
+      line-height: 1.55;
+      color: var(--text-muted);
+      margin-bottom: 7px;
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+    }
+
+    ul.bullet-list li::before {
+      content: "•";
+      color: var(--cyan);
+      font-weight: bold;
+      font-size: 16px;
+      line-height: 1;
+    }
+
+    /* Slide 1 Hero Specifics */
+    .hero-title {
+      font-size: 56px;
+      font-weight: 900;
+      color: #fff;
+      letter-spacing: -0.03em;
+      line-height: 1.05;
+      background: linear-gradient(135deg, #ffffff 40%, var(--cyan) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 8px;
+    }
+
+    .hero-subtitle {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--green);
+      margin-bottom: 4px;
+    }
+
+    .hero-parenthesis {
+      font-size: 14px;
+      color: var(--text-muted);
+      margin-bottom: 24px;
+    }
+
+    .pills-row {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 28px;
+      flex-wrap: wrap;
+    }
+
+    /* Bottom Control Bar */
+    .deck-controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 24px;
+      background: rgba(10, 15, 29, 0.95);
+      border-top: 1px solid var(--card-border);
+      width: 100%;
+      z-index: 10;
+    }
+
+    .btn {
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--text-main);
+      border: 1px solid var(--card-border);
+      padding: 7px 16px;
+      border-radius: 8px;
+      font-size: 12.5px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+
+    .btn:hover {
+      background: rgba(255, 255, 255, 0.15);
+      border-color: var(--cyan);
+      color: #fff;
+    }
+
+    .progress-bar-container {
+      flex: 1;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 2px;
+      margin: 0 20px;
+      overflow: hidden;
+    }
+
+    .progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, var(--cyan), var(--green));
+      width: 11.11%;
+      transition: width 0.3s ease;
+    }
+
+    /* Speaker Notes Modal */
+    .notes-drawer {
+      position: absolute;
+      bottom: 50px;
+      left: 20px;
+      right: 20px;
+      max-height: 180px;
+      background: rgba(15, 23, 42, 0.96);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--cyan);
+      border-radius: 12px;
+      padding: 16px 20px;
+      font-size: 13.5px;
+      line-height: 1.6;
+      color: #e2e8f0;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.7);
+      display: none;
+      z-index: 20;
+      overflow-y: auto;
+    }
+
+    .notes-drawer.open {
+      display: block;
+    }
+
+    .notes-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--cyan);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    /* Print styles for saving as PDF */
+    @media print {
+      body {
+        background: transparent !important;
+      }
+      .deck-container {
+        width: 100vw !important;
+        height: 100vh !important;
+        max-width: none !important;
+        max-height: none !important;
+        box-shadow: none !important;
+        border: none !important;
+        border-radius: 0 !important;
+      }
+      .slide {
+        display: flex !important;
+        opacity: 1 !important;
+        position: relative !important;
+        page-break-after: always;
+        height: 100vh !important;
+      }
+      .deck-controls, .notes-drawer {
+        display: none !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="deck-container" id="presentation">
+
+    <!-- ==================== SLIDE 1 ==================== -->
+    <div class="slide active" data-notes="Welcome judges and audience! We are Team PEAKY BLINDERS from Punjab Engineering College, Chandigarh. I am Parth Sharma, and today we present PingShield—a privacy-first QR Lost & Found and Emergency Response system designed as a high-impact extension to PingME. In this presentation, we will show you how PingShield bridges physical belongings, personal privacy, and life-saving highway emergency response with zero app friction.">
+      <div style="margin-top: 10px;">
+        <span class="badge badge-cyan">INNOVATION IN EMERGENCY & PRIVACY TECH</span>
+      </div>
+
+      <div style="margin-top: 14px;">
+        <h1 class="hero-title">PingShield</h1>
+        <div class="hero-subtitle">Privacy-First QR Lost & Found & Emergency Response System</div>
+        <div class="hero-parenthesis">(A High-Impact Safety Extension to the PingME Ecosystem)</div>
+      </div>
+
+      <div class="pills-row">
+        <span class="badge badge-cyan">⚡ ZERO-APP MOBILE WEBFLOW</span>
+        <span class="badge badge-green">🛡️ 100% MASKED CLOUD TELEPHONY</span>
+        <span class="badge badge-amber">🚨 TWO-ATTEMPT EMERGENCY PROTOCOL</span>
+      </div>
+
+      <div class="card" style="margin-top: auto; padding: 20px 28px; background: rgba(20, 27, 45, 0.9);">
+        <div style="display: grid; grid-template-columns: 1.1fr 1fr; gap: 30px;">
+          <div>
+            <div style="font-size: 11px; font-weight: 700; color: var(--cyan); letter-spacing: 0.1em; text-transform: uppercase;">Team Details</div>
+            <div style="font-size: 22px; font-weight: 800; color: #fff; margin: 4px 0;">PEAKY BLINDERS</div>
+            <div style="font-size: 13.5px; color: var(--text-muted); margin-bottom: 2px;">Team Leader: <strong style="color: #fff;">Parth Sharma</strong></div>
+            <div style="font-size: 13px; color: var(--amber); font-weight: 600;">Punjab Engineering College (PEC), Chandigarh</div>
+          </div>
+          <div>
+            <div style="font-size: 11px; font-weight: 700; color: var(--green); letter-spacing: 0.1em; text-transform: uppercase;">Project Evaluation Readiness</div>
+            <div style="font-size: 17px; font-weight: 700; color: #fff; margin: 4px 0;">Working Prototype & Live Simulation Ready</div>
+            <div style="font-size: 12.5px; color: var(--text-muted); line-height: 1.5;">
+              • Full-Stack Next.js 15 Web Application with PostgreSQL<br>
+              • Credential-Free Local Simulation Mode enabled for immediate testing<br>
+              • Production-ready privacy and masked calling protocols
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== SLIDE 2 ==================== -->
+    <div class="slide" data-notes="Every day millions of people attach stickers or baggage tags with their phone numbers. This creates 3 huge crises: First, privacy: you're broadcasting your personal phone number on luggage, keychains, and bikes to anyone with bad intentions. Second, in a road accident, bystanders want to help, but the victim's phone is locked. Family members aren't alerted until hours later. Third, existing apps force finders to install an app or register—nobody has patience for that. PingShield eliminates all three.">
+      <div class="slide-topbar">
+        <div>
+          <div class="kicker">PROBLEM STATEMENT • CRITICAL VULNERABILITIES</div>
+          <h2 class="slide-title">Why Traditional Tags & Emergency Outreach Fail</h2>
+        </div>
+        <div class="slide-counter">02 / 09</div>
+      </div>
+
+      <div class="grid-3">
+        <!-- Card 1 -->
+        <div class="card">
+          <span class="badge badge-red" style="align-self: flex-start;">PRIVACY EXPOSURE</span>
+          <div class="card-title">Severe Privacy & Doxxing Risks</div>
+          <div class="card-desc">
+            Pasting phone numbers on bags, bikes, or laptops exposes owners directly to unsolicited spam, cyber stalking, extortion, and social engineering.
+          </div>
+          <div class="card-nested" style="margin-top: auto;">
+            <div style="font-size: 10.5px; font-weight: 700; color: var(--red);">THE HARSH REALITY</div>
+            <div style="font-size: 12px; color: #fff; margin-top: 3px; font-weight: 500;">
+              100% of plain tags leak personal contact records to any passerby without consent or access control.
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="card">
+          <span class="badge badge-amber" style="align-self: flex-start;">GOLDEN HOUR LOSS</span>
+          <div class="card-title">Delayed Road Emergency Help</div>
+          <div class="card-desc">
+            During vehicle crashes or medical crises, willing bystanders cannot reach family members because the victim's phone is locked behind PINs and biometrics.
+          </div>
+          <div class="card-nested" style="margin-top: auto;">
+            <div style="font-size: 10.5px; font-weight: 700; color: var(--amber);">THE HARSH REALITY</div>
+            <div style="font-size: 12px; color: #fff; margin-top: 3px; font-weight: 500;">
+              Critical golden-hour trauma response is paralyzed because first responders have zero verified contact vectors.
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="card">
+          <span class="badge badge-cyan" style="align-self: flex-start;">HIGH ABANDONMENT</span>
+          <div class="card-title">Severe App & Registration Friction</div>
+          <div class="card-desc">
+            Finders will not download a 50MB mobile app, create an account, or surrender their personal phone number just to do a quick good deed and report a lost item.
+          </div>
+          <div class="card-nested" style="margin-top: auto;">
+            <div style="font-size: 10.5px; font-weight: 700; color: var(--cyan);">THE HARSH REALITY</div>
+            <div style="font-size: 12px; color: #fff; margin-top: 3px; font-weight: 500;">
+              Over 85% drop-off rate occurs when users are forced to install an application to complete a 10-second action.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== SLIDE 3 ==================== -->
+    <div class="slide" data-notes="Here is the PingShield solution: A zero-app, mobile-first web experience. When someone finds a lost bag or comes across a vehicle crash, they simply point their camera at the QR code. It opens an instant mobile web page in English or Hindi. From there, they can initiate a 100% masked phone call or message where neither side sees real phone numbers. They can voluntarily share their GPS coordinates or type a landmark. And in critical emergencies, they have direct 1-tap access to 112 and 1033 with on-screen GPS coordinates ready to read out to the dispatcher.">
+      <div class="slide-topbar">
+        <div>
+          <div class="kicker">THE SOLUTION • PINGSHIELD ECOSYSTEM</div>
+          <h2 class="slide-title">Privacy-Preserving Physical-to-Digital Bridge</h2>
+        </div>
+        <div class="slide-counter">03 / 09</div>
+      </div>
+
+      <div class="grid-2x2">
+        <div class="card">
+          <span class="badge badge-cyan" style="align-self: flex-start;">01 • ZERO-APP INSTANT ACCESS</span>
+          <div class="card-title">Dynamic Cryptographic QR Tags</div>
+          <ul class="bullet-list">
+            <li>Unique, unpredictable salted tokens attached to bags, vehicles, keys, and laptops.</li>
+            <li>Instant mobile web application launches directly inside any browser—zero downloads.</li>
+            <li>Full bilingual localization: Seamless English & Hindi toggle for universal accessibility.</li>
+          </ul>
+        </div>
+
+        <div class="card">
+          <span class="badge badge-green" style="align-self: flex-start;">02 • IDENTITY CLOAK</span>
+          <div class="card-title">100% Masked Communication</div>
+          <ul class="bullet-list">
+            <li>Finders call or message owners through a secure cloud telephony relay proxy.</li>
+            <li>Neither party ever sees the other's real phone number—complete mutual privacy.</li>
+            <li>Eliminates persistent harassment, unsolicited calls, and phone number harvesting.</li>
+          </ul>
+        </div>
+
+        <div class="card">
+          <span class="badge badge-purple" style="align-self: flex-start;">03 • VOLUNTARY GEOLOCATION</span>
+          <div class="card-title">Consent-Driven Location Sharing</div>
+          <ul class="bullet-list">
+            <li>One-tap GPS coordinates captured only upon explicit finder consent.</li>
+            <li>Interactive Leaflet map rendered for the asset owner in real time.</li>
+            <li>Built-in manual landmark fallback if GPS permissions are denied or unavailable.</li>
+          </ul>
+        </div>
+
+        <div class="card">
+          <span class="badge badge-red" style="align-self: flex-start;">04 • PUBLIC LIFELINES</span>
+          <div class="card-title">Instant Public Emergency Helplines</div>
+          <ul class="bullet-list">
+            <li>Direct 1-tap dialer for 112 (National Emergency) and 1033 (National Highways).</li>
+            <li>Displays real-time GPS coordinates on screen for instant verbal relay to dispatchers.</li>
+            <li>Equips Good Samaritans during critical road distress with zero delay or confusion.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== SLIDE 4 ==================== -->
+    <div class="slide" data-notes="This slide highlights our core innovation: The 'Two-Attempt' Emergency Rule. The biggest risk in emergency contact systems is false alarms: you don't want a curious passerby immediately calling someone's mother or spouse at 2 AM. When emergency mode is triggered, only the owner can be called first. Only after 2 consecutive server-verified unanswered calls does the system safely escalate and unlock the family contact. Crucially, this is enforced entirely on the backend via telephony webhooks—a user cannot inspect elements or spoof clicks to bypass this rule.">
+      <div class="slide-topbar">
+        <div>
+          <div class="kicker">CORE INNOVATION • ESCALATION & INTEGRITY</div>
+          <h2 class="slide-title">The "Two-Attempt" Emergency Escalation Rule</h2>
+        </div>
+        <div class="slide-counter">04 / 09</div>
+      </div>
+
+      <div class="grid-2">
+        <!-- Left: Workflow -->
+        <div class="card">
+          <span class="badge badge-amber" style="align-self: flex-start;">OPERATIONAL WORKFLOW</span>
+          <div class="card-title" style="font-size: 19px; margin-top: 12px;">How the Protocol Operates</div>
+
+          <div style="margin-top: 14px; display: flex; flex-direction: column; gap: 14px;">
+            <div class="card-nested">
+              <div style="font-size: 12.5px; font-weight: 700; color: var(--cyan);">STEP 1 • EMERGENCY MODE TRIGGER</div>
+              <div style="font-size: 12px; color: var(--text-muted); margin-top: 3px;">
+                Finder switches the scan page to Emergency Mode (e.g. vehicle crash or medical distress).
+              </div>
+            </div>
+
+            <div class="card-nested">
+              <div style="font-size: 12.5px; font-weight: 700; color: var(--amber);">STEP 2 • OWNER PRIORITY CALL (FAMILY LOCKED)</div>
+              <div style="font-size: 12px; color: var(--text-muted); margin-top: 3px;">
+                Owner masked call button unlocks immediately. Family emergency contacts remain strictly <strong>LOCKED</strong> to prevent false alarms or panicking relatives.
+              </div>
+            </div>
+
+            <div class="card-nested">
+              <div style="font-size: 12.5px; font-weight: 700; color: var(--green);">STEP 3 • SERVER-VERIFIED ESCALATION</div>
+              <div style="font-size: 12px; color: var(--text-muted); margin-top: 3px;">
+                Only after <strong>2 server-verified unanswered calls</strong> to the owner does the "Call Masked Family Contact" button unlock!
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Security -->
+        <div class="card">
+          <span class="badge badge-red" style="align-self: flex-start;">CRYPTOGRAPHIC DEFENSE</span>
+          <div class="card-title" style="font-size: 19px; margin-top: 12px;">Anti-Bypass Security Architecture</div>
+
+          <div style="margin-top: 14px; display: flex; flex-direction: column; gap: 14px;">
+            <div class="card-nested">
+              <div style="font-size: 12.5px; font-weight: 700; color: var(--green);">SERVER-ENFORCED TELEPHONY CALLBACKS</div>
+              <div style="font-size: 12px; color: var(--text-muted); margin-top: 3px;">
+                Escalation is not driven by client clicks. Cloud PBX webhooks transmit signed call outcomes ('no-answer', 'busy', duration) directly to backend workers.
+              </div>
+            </div>
+
+            <div class="card-nested">
+              <div style="font-size: 12.5px; font-weight: 700; color: var(--green);">SESSION TIMERS & RATE-LIMITED TOKENS</div>
+              <div style="font-size: 12px; color: var(--text-muted); margin-top: 3px;">
+                Backend maintains authenticated scan sessions with bounded expiration windows. Rapid-fire redialing or automated click spoofing is rejected.
+              </div>
+            </div>
+
+            <div class="card-nested">
+              <div style="font-size: 12.5px; font-weight: 700; color: var(--green);">TAMPER-PROOF CLIENT INTEGRITY</div>
+              <div style="font-size: 12px; color: var(--text-muted); margin-top: 3px;">
+                Refreshing the tab, modifying LocalStorage, or manipulating DOM elements cannot unlock the contact. The API dispenses family tokens only upon verified escalation.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== SLIDE 5 ==================== -->
+    <div class="slide" data-notes="Here is our production-ready tech stack. We chose Next.js with TypeScript and Tailwind CSS to guarantee sub-second load times even on weak 2G or 3G highway networks. On the backend, Node.js APIs connect to a durable background job queue to ensure webhook retries never drop a call state. Our database is PostgreSQL with token hashing and PII masking, meaning even if someone intercepts database dumps, phone numbers remain protected. Finally, our telephony bridge allows masked voice calls and SMS dispatch alongside Leaflet maps.">
+      <div class="slide-topbar">
+        <div>
+          <div class="kicker">SYSTEM ARCHITECTURE • TECHNICAL BLUEPRINT</div>
+          <h2 class="slide-title">Engineered for Resilience, Low-Bandwidth & Security</h2>
+        </div>
+        <div class="slide-counter">05 / 09</div>
+      </div>
+
+      <div class="grid-4">
+        <div class="card">
+          <span class="badge badge-cyan" style="align-self: flex-start;">LAYER 01 • CLIENT</span>
+          <div class="card-title" style="font-size: 15px;">Frontend & Edge</div>
+          <div style="font-size: 12px; font-weight: 700; color: var(--cyan); margin-bottom: 8px;">Next.js (TS) + Tailwind</div>
+          <ul class="bullet-list">
+            <li>Mobile-first, responsive PWA architecture.</li>
+            <li>Sub-180KB initial bundle for instant loading on 2G/3G networks.</li>
+            <li>Instant English & Hindi dual-language switch.</li>
+            <li>Zero app installation required on any mobile browser.</li>
+          </ul>
+        </div>
+
+        <div class="card">
+          <span class="badge badge-green" style="align-self: flex-start;">LAYER 02 • CORE</span>
+          <div class="card-title" style="font-size: 15px;">Backend & Queue</div>
+          <div style="font-size: 12px; font-weight: 700; color: var(--green); margin-bottom: 8px;">Node.js APIs + Job Queue</div>
+          <ul class="bullet-list">
+            <li>Stateless RESTful APIs with strict schema validation.</li>
+            <li>Durable background job queue for bounded retries & escalation.</li>
+            <li>Webhook ingestion pipeline for cloud telephony callbacks.</li>
+            <li>Deterministic state machine tracking incident progression.</li>
+          </ul>
+        </div>
+
+        <div class="card">
+          <span class="badge badge-purple" style="align-self: flex-start;">LAYER 03 • DATA</span>
+          <div class="card-title" style="font-size: 15px;">Database & Crypto</div>
+          <div style="font-size: 12px; font-weight: 700; color: var(--purple); margin-bottom: 8px;">PostgreSQL + SHA-256</div>
+          <ul class="bullet-list">
+            <li>Relational integrity for owners, items, tags & incidents.</li>
+            <li>Strict SHA-256 token hashing for all public QR tags.</li>
+            <li>Field-level PII masking—real numbers never leaked in payloads.</li>
+            <li>Immutable audit logging for compliance & safety verification.</li>
+          </ul>
+        </div>
+
+        <div class="card">
+          <span class="badge badge-amber" style="align-self: flex-start;">LAYER 04 • RELAY</span>
+          <div class="card-title" style="font-size: 15px;">Telephony & Maps</div>
+          <div style="font-size: 12px; font-weight: 700; color: var(--amber); margin-bottom: 8px;">Cloud PBX + Leaflet</div>
+          <ul class="bullet-list">
+            <li>Virtual masked voice bridge & SMS relay.</li>
+            <li>Browser Geolocation API + Leaflet OSM mapping.</li>
+            <li>Direct deep-links to 112 & 1033 public emergency helplines.</li>
+            <li>Dynamic vector QR generator with tamper-resistant salts.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== SLIDE 6 ==================== -->
+    <div class="slide" data-notes="Every safety system must consider abuse vectors. PingShield implements 4 layers of guardrails: First, rate limiting: a troll cannot repeatedly scan a bag to trigger hundreds of SMS alerts—it is capped at 3 per 5 minutes with daily quotas. Second, genuine emergency calls bypass this cap safely with priority queues. Third, emergency contacts must explicitly accept the invite; they can revoke consent or block a tag with one tap. And fourth: Zero False Promises. We don't claim to magically dispatch ambulances. We provide transparent UI delivery status (Queued, Sent, Delivered) to empower real bystanders.">
+      <div class="slide-topbar">
+        <div>
+          <div class="kicker">SAFETY GUARDRAILS • FRAUD & COST MITIGATION</div>
+          <h2 class="slide-title">Built for Real-World Chaos, Fraud & Privacy Defense</h2>
+        </div>
+        <div class="slide-counter">06 / 09</div>
+      </div>
+
+      <div class="grid-2x2">
+        <div class="card">
+          <span class="badge badge-cyan" style="align-self: flex-start;">RATE LIMITING & QUOTAS</span>
+          <div class="card-title">Anti-Spam Scan & Alert Throttling</div>
+          <div class="card-desc">
+            Enforces a maximum of <strong>3 ordinary scan alerts per 5 minutes</strong> per IP and session token. Daily SMS and telephony quotas completely eliminate runaway cloud provider bills and denial-of-wallet attacks.
+          </div>
+        </div>
+
+        <div class="card">
+          <span class="badge badge-red" style="align-self: flex-start;">EMERGENCY CHANNELING</span>
+          <div class="card-title">Distinct Emergency Priority Routing</div>
+          <div class="card-desc">
+            Verified emergency mode reports safely bypass ordinary spam limits through authenticated session tokens, ensuring genuine highway road accident alerts are never throttled or delayed.
+          </div>
+        </div>
+
+        <div class="card">
+          <span class="badge badge-green" style="align-self: flex-start;">CONSENT & REVOCATION</span>
+          <div class="card-title">Explicit Opt-In & One-Tap Revocation</div>
+          <div class="card-desc">
+            Emergency contacts must explicitly accept a digital invite before being linked to an item. Any contact can revoke consent or permanently block misuse with a single tap at any time.
+          </div>
+        </div>
+
+        <div class="card">
+          <span class="badge badge-amber" style="align-self: flex-start;">SYSTEM INTEGRITY</span>
+          <div class="card-title">Honest UI & Zero False Promises</div>
+          <div class="card-desc">
+            Presents honest, real-time UI statuses (<strong>Queued, Sent, Delivered, Answered</strong>). PingShield never makes misleading claims of automated ambulance dispatch—it transparently empowers human response.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== SLIDE 7 ==================== -->
+    <div class="slide" data-notes="Here are the two journeys side-by-side. The owner takes just 2 minutes to register an item, attach verified emergency contacts, and download a printable QR tag. On the other side, the finder has an astonishingly fast sub-15-second experience: Point camera, open page in Hindi or English, tap to call or message privately, or trigger emergency mode. Zero downloads, zero friction.">
+      <div class="slide-topbar">
+        <div>
+          <div class="kicker">USER JOURNEYS • ASYMMETRIC USER EXPERIENCE</div>
+          <h2 class="slide-title">Seamless Two-Sided Experience for Owners & Finders</h2>
+        </div>
+        <div class="slide-counter">07 / 09</div>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 16px; height: 100%;">
+        <!-- Owner Lane -->
+        <div class="card" style="padding: 16px 22px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+            <span class="badge badge-green">OWNER DASHBOARD JOURNEY (2 MINUTES SETUP)</span>
+            <span style="font-size: 11.5px; color: var(--text-dim); font-weight: 600;">Full Asset Lifecycle Management</span>
+          </div>
+
+          <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px;">
+            <div class="card-nested">
+              <div style="font-size: 12px; font-weight: 700; color: #fff;">1. Register Asset</div>
+              <div style="font-size: 11px; color: var(--text-muted); margin-top: 3px;">Input item details (backpack, bike, keys) & generate unique cryptographic token.</div>
+            </div>
+            <div class="card-nested">
+              <div style="font-size: 12px; font-weight: 700; color: #fff;">2. Add Contacts</div>
+              <div style="font-size: 11px; color: var(--text-muted); margin-top: 3px;">Invite primary & secondary family emergency contacts with explicit opt-in confirmation.</div>
+            </div>
+            <div class="card-nested">
+              <div style="font-size: 12px; font-weight: 700; color: #fff;">3. Print & Attach</div>
+              <div style="font-size: 11px; color: var(--text-muted); margin-top: 3px;">Download printable high-contrast QR badge or weatherproof sticker for physical application.</div>
+            </div>
+            <div class="card-nested">
+              <div style="font-size: 12px; font-weight: 700; color: #fff;">4. Track & Recover</div>
+              <div style="font-size: 11px; color: var(--text-muted); margin-top: 3px;">View incident timeline, GPS pins on Leaflet map, chat anonymously & mark recovered.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Finder Lane -->
+        <div class="card" style="padding: 16px 22px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+            <span class="badge badge-cyan">FINDER RAPID EXPERIENCE (&lt;15 SECONDS RESOLUTION)</span>
+            <span style="font-size: 11.5px; color: var(--text-dim); font-weight: 600;">Zero Downloads • Zero Login</span>
+          </div>
+
+          <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px;">
+            <div class="card-nested">
+              <div style="font-size: 12px; font-weight: 700; color: #fff;">1. Scan QR Tag</div>
+              <div style="font-size: 11px; color: var(--text-muted); margin-top: 3px;">Point native smartphone camera. Instant mobile web app launches in under 1.2 seconds.</div>
+            </div>
+            <div class="card-nested">
+              <div style="font-size: 12px; font-weight: 700; color: #fff;">2. Select Language</div>
+              <div style="font-size: 11px; color: var(--text-muted); margin-top: 3px;">Instant toggle between English & Hindi for high comfort and universal accessibility.</div>
+            </div>
+            <div class="card-nested">
+              <div style="font-size: 12px; font-weight: 700; color: #fff;">3. Masked Contact</div>
+              <div style="font-size: 11px; color: var(--text-muted); margin-top: 3px;">One-tap voluntary GPS share + private masked voice call or anonymous message relay.</div>
+            </div>
+            <div class="card-nested">
+              <div style="font-size: 12px; font-weight: 700; color: #fff;">4. Emergency Mode</div>
+              <div style="font-size: 11px; color: var(--text-muted); margin-top: 3px;">If road accident: 1-tap 112/1033 hotlines or 2-Attempt verified family escalation.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== SLIDE 8 ==================== -->
+    <div class="slide" data-notes="Looking forward, PingShield is designed for massive scale. First, seamless integration with PingME: PingME users can manage all physical safety tags without switching apps. Second, smart hardware: Expanding into NFC + QR hybrid metallic tags and UV-resistant weatherproof vehicle decals. Third, national community impact: Accelerating golden-hour family notifications on Indian highways while permanently eliminating privacy risks for travelers.">
+      <div class="slide-topbar">
+        <div>
+          <div class="kicker">FUTURE SCOPE & IMPACT • HORIZONS & ROADMAP</div>
+          <h2 class="slide-title">Scaling from Personal Belongings to National Safety</h2>
+        </div>
+        <div class="slide-counter">08 / 09</div>
+      </div>
+
+      <div class="grid-3">
+        <div class="card">
+          <span class="badge badge-cyan" style="align-self: flex-start;">INTEGRATION HORIZON</span>
+          <div class="card-title">Seamless PingME Integration</div>
+          <div class="card-desc" style="margin-bottom: 12px;">
+            Architected with modular API boundaries to plug directly into the PingME application suite.
+          </div>
+          <ul class="bullet-list">
+            <li>Turns PingME into an all-in-one digital identity and physical safety hub.</li>
+            <li>Enables PingME users to manage physical tags and review incidents natively.</li>
+            <li>Unified push notifications and emergency escalation alerts.</li>
+          </ul>
+        </div>
+
+        <div class="card">
+          <span class="badge badge-purple" style="align-self: flex-start;">HARDWARE EXPANSION</span>
+          <div class="card-title">Smart Hardware & Decals</div>
+          <div class="card-desc" style="margin-bottom: 12px;">
+            Transitioning from paper printouts to durable, tamper-evident physical form factors.
+          </div>
+          <ul class="bullet-list">
+            <li>NFC + Dynamic QR hybrid metallic tags for tap-to-reach interactions.</li>
+            <li>Industrial-grade waterproof, UV-resistant vinyl vehicle decals.</li>
+            <li>Reflective highway stickers for two-wheelers, helmets, and commercial trucks.</li>
+          </ul>
+        </div>
+
+        <div class="card">
+          <span class="badge badge-green" style="align-self: flex-start;">COMMUNITY IMPACT</span>
+          <div class="card-title">National Highway Safety</div>
+          <div class="card-desc" style="margin-bottom: 12px;">
+            Protecting citizens during critical Golden Hour road emergencies across India.
+          </div>
+          <ul class="bullet-list">
+            <li>Accelerates family notifications on Indian expressways by up to 2-3 hours.</li>
+            <li>Eliminates phone number leakage on luggage, safeguarding women and solo travelers.</li>
+            <li>Fosters a culture of proactive, privacy-safe Good Samaritan assistance.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== SLIDE 9 ==================== -->
+    <div class="slide" data-notes="Thank you so much! We are Team PEAKY BLINDERS from Punjab Engineering College, Chandigarh. We have a live, working, credential-free simulation mode running locally right now where you can test the QR scanning, the bilingual UI, the location sharing, and the Two-Attempt Emergency Rule. We are now open for your questions and feedback!">
+      <div style="margin-top: 10px;">
+        <span class="badge badge-green">PROJECT EVALUATION & CLOSING</span>
+      </div>
+
+      <div style="margin-top: 16px;">
+        <h1 class="hero-title" style="font-size: 46px;">Thank You! Q&A</h1>
+        <div class="hero-subtitle" style="font-size: 20px;">PingShield: Bridging Lost Belongings & Life-Saving Emergency Lifelines</div>
+      </div>
+
+      <div class="grid-2" style="margin-top: 24px; height: auto;">
+        <!-- Left Box -->
+        <div class="card" style="padding: 24px;">
+          <span class="badge badge-cyan" style="align-self: flex-start;">TEAM PEAKY BLINDERS</span>
+          <div style="font-size: 24px; font-weight: 800; color: #fff; margin: 10px 0 4px 0;">Parth Sharma</div>
+          <div style="font-size: 13.5px; color: var(--text-muted);">Team Leader</div>
+          <div style="font-size: 15px; font-weight: 700; color: var(--amber); margin-top: 10px;">
+            Punjab Engineering College (PEC), Chandigarh
+          </div>
+          <div style="font-size: 12.5px; color: var(--text-muted); margin-top: 10px; line-height: 1.5;">
+            Specialization: Cloud Telephony Relay, Zero-App Web Architecture, Highway Safety Protocols & Identity Privacy.
+          </div>
+        </div>
+
+        <!-- Right Box -->
+        <div class="card" style="padding: 24px; border-color: var(--cyan);">
+          <span class="badge badge-green" style="align-self: flex-start;">LIVE DEMO READY NOW</span>
+          <div style="font-size: 22px; font-weight: 800; color: #fff; margin: 10px 0 6px 0;">
+            Interactive Local Simulation Mode
+          </div>
+          <div style="font-size: 13px; color: var(--text-muted); line-height: 1.6;">
+            • Credential-Free simulation of masked calls, SMS, & telephony callbacks<br>
+            • Scan dynamic QR codes live with any smartphone camera<br>
+            • Experience the Two-Attempt Emergency Rule and Anti-Bypass defense<br>
+            • Bilingual English/Hindi toggle demonstration
+          </div>
+          <div style="margin-top: 14px; font-size: 13.5px; font-weight: 700; color: var(--cyan);">
+            👉 Ready for live jury testing and walkthrough!
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Speaker Notes Overlay Drawer -->
+    <div class="notes-drawer" id="notesDrawer">
+      <div class="notes-header">
+        <span>🎤 Presenter Script & Notes</span>
+        <span style="cursor: pointer;" onclick="toggleNotes()">✕ CLOSE (N)</span>
+      </div>
+      <div id="notesText"></div>
+    </div>
+
+    <!-- Bottom Presentation Controls -->
+    <div class="deck-controls">
+      <div style="display: flex; gap: 8px;">
+        <button class="btn" onclick="prevSlide()" title="Previous Slide (Left Arrow)">◀ Prev</button>
+        <button class="btn" onclick="nextSlide()" title="Next Slide (Right Arrow / Space)">Next ▶</button>
+      </div>
+
+      <div class="progress-bar-container">
+        <div class="progress-bar" id="progressBar"></div>
+      </div>
+
+      <div style="display: flex; gap: 8px; align-items: center;">
+        <button class="btn" onclick="toggleNotes()" title="Toggle Speaker Notes (N)">📝 Notes</button>
+        <button class="btn" onclick="toggleFullScreen()" title="Full Screen (F)">⛶ Fullscreen</button>
+        <button class="btn" onclick="window.print()" title="Print / Save as PDF">🖨️ PDF</button>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    let currentSlide = 0;
+    const slides = document.querySelectorAll('.slide');
+    const totalSlides = slides.length;
+    const progressBar = document.getElementById('progressBar');
+    const notesDrawer = document.getElementById('notesDrawer');
+    const notesText = document.getElementById('notesText');
+
+    function updateSlide() {
+      slides.forEach((s, idx) => {
+        s.classList.toggle('active', idx === currentSlide);
+      });
+      const progressPercent = ((currentSlide + 1) / totalSlides) * 100;
+      progressBar.style.width = `${progressPercent}%`;
+
+      // Update notes
+      const notes = slides[currentSlide].getAttribute('data-notes') || 'No notes for this slide.';
+      notesText.textContent = notes;
+    }
+
+    function nextSlide() {
+      if (currentSlide < totalSlides - 1) {
+        currentSlide++;
+        updateSlide();
+      }
+    }
+
+    function prevSlide() {
+      if (currentSlide > 0) {
+        currentSlide--;
+        updateSlide();
+      }
+    }
+
+    function toggleNotes() {
+      notesDrawer.classList.toggle('open');
+    }
+
+    function toggleFullScreen() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(err => {});
+      } else {
+        if (document.exitFullscreen) {
+          document.exitFullscreen();
+        }
+      }
+    }
+
+    // Keyboard navigation
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {
+        e.preventDefault();
+        nextSlide();
+      } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+        e.preventDefault();
+        prevSlide();
+      } else if (e.key.toLowerCase() === 'n') {
+        e.preventDefault();
+        toggleNotes();
+      } else if (e.key.toLowerCase() === 'f') {
+        e.preventDefault();
+        toggleFullScreen();
+      }
+    });
+
+    // Initialize
+    updateSlide();
+  </script>
+</body>
+</html>
